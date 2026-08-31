@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>ميدان إسماعيل ياسين — السويس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --espresso:#110a06;
+    --espresso-2:#1f140e;
+    --gold:#c9a24a;
+    --gold-bright:#e9c877;
+    --cream:#f2e6c9;
+    --terracotta:#9a3f2e;
+    --canal:#1f4b49;
+    --shadow: rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:
+      radial-gradient(circle at 50% -10%, #2a1a0f 0%, var(--espresso) 55%),
+      var(--espresso);
+    color:var(--cream);
+    font-family:'Tajawal', sans-serif;
+    overflow-x:hidden;
+    width:100%;
+    min-height:100vh;
+  }
+  
+  /* --- Film grain & vignette --- */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px);
+    opacity:.2;
+    pointer-events:none;
+    z-index:1;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events:none;
+    z-index:2;
+  }
+
+  /* --- Mouse spotlight --- */
+  #spotlight{
+    position:fixed;
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(201,162,74,0.08) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events:none;
+    z-index:1;
+    transition: opacity 0.3s;
+  }
+
+  /* --- Gold Particles --- */
+  #particles-canvas{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:0.6;
+  }
+
+  /* --- 3D Curtain with fold effect --- */
+  .curtain{
+    position:fixed; inset:0; z-index:50;
+    display:flex;
+    pointer-events:none;
+    visibility:visible;
+    perspective:1200px;
+  }
+  .curtain .panel{
+    flex:1; 
+    background:
+      repeating-linear-gradient(90deg, #7a2a1e 0 18px, #6a2118 18px 36px),
+      linear-gradient(180deg, #8a3324, #4a150e);
+    background-blend-mode:multiply;
+    box-shadow: inset -10px 0 25px rgba(0,0,0,.5);
+    transition: transform 1.8s cubic-bezier(.76,0,.24,1);
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+  .curtain .panel:first-child{
+    transform-origin:left center;
+    transform: rotateY(0deg);
+  }
+  .curtain .panel:last-child{
+    transform-origin:right center;
+    transform: rotateY(0deg);
+  }
+  .curtain.open .panel:first-child{
+    transform: translateX(-102%) rotateY(35deg);
+  }
+  .curtain.open .panel:last-child{
+    transform: translateX(102%) rotateY(-35deg);
+  }
+  .curtain.done{ visibility:hidden; }
+
+  /* --- Header with staggered animation --- */
+  header{
+    position:relative; z-index:3;
+    text-align:center;
+    padding:38px 20px 10px;
+  }
+  .eyebrow{
+    font-size:12.5px;
+    letter-spacing:4px;
+    color:var(--gold);
+    text-transform:uppercase;
+    opacity:0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease forwards 1.8s;
+  }
+  .eyebrow span{ opacity:.6; letter-spacing:2px; }
+  
+  h1.name{
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:clamp(40px, 12vw, 64px);
+    color:var(--gold-bright);
+    text-shadow: 0 2px 0 #5c3b12, 0 6px 18px rgba(0,0,0,.5);
+    margin:8px 0 2px;
+    line-height:1.15;
+    opacity:0;
+    transform: translateY(30px);
+    animation: fadeUp 1s ease forwards 2.0s;
+  }
+  .years{
+    font-size:15px; letter-spacing:2px; color:var(--cream); opacity:0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease forwards 2.2s;
+  }
+
+  @keyframes fadeUp{
+    to{ opacity:1; transform: translateY(0); }
+  }
+
+  /* --- 3D Stage with floating --- */
+  .stage{
+    position:relative; z-index:3;
+    display:flex; justify-content:center;
+    padding:26px 20px 8px;
+    perspective:1400px;
+  }
+  .card3d-wrap{
+    animation: float 6s ease-in-out infinite;
+    transform-style: preserve-3d;
+  }
+  @keyframes float{
+    0%, 100%{ transform: translateY(0px); }
+    50%{ transform: translateY(-12px); }
+  }
+  
+  .card3d{
+    width:min(82vw, 320px);
+    aspect-ratio:3/4;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .4s cubic-bezier(.2,.8,.2,1);
+    cursor:pointer;
+    touch-action:none;
+  }
+  .card3d.flipped{ transform:rotateY(180deg) !important; }
+  
+  /* Dynamic lighting overlay */
+  .card3d::before{
+    content:"";
+    position:absolute; inset:0; border-radius:22px;
+    background: radial-gradient(circle at 30% 30%, rgba(233,200,119,0.15), transparent 60%);
+    z-index:10; pointer-events:none;
+    opacity:0; transition: opacity 0.3s;
+  }
+  .card3d:hover::before{ opacity:1; }
+
+  .cf{
+    position:absolute; inset:0;
+    border-radius:22px;
+    backface-visibility:hidden;
+    overflow:hidden;
+    box-shadow: 
+      0 28px 55px rgba(0,0,0,.55), 
+      0 0 0 1px rgba(233,200,119,.3),
+      inset 0 0 0 3px rgba(233,200,119,.55);
+    transition: box-shadow 0.3s;
+  }
+  .card3d:hover .cf{
+    box-shadow: 
+      0 35px 65px rgba(0,0,0,.7), 
+      0 0 20px rgba(201,162,74,0.15),
+      0 0 0 1px rgba(233,200,119,.5),
+      inset 0 0 0 3px rgba(233,200,119,.7);
+  }
+  .cf.front{
+    background:linear-gradient(160deg, #3a2717, #1c1108 70%);
+    display:flex;
+    flex-direction:column;
+  }
+  .cf.back{
+    transform:rotateY(180deg);
+    background:linear-gradient(160deg, #2e1f16, #1c1108);
+    display:flex; align-items:center; justify-content:center;
+    padding:26px;
+  }
+  .cf.back p{
+    font-size:14px; line-height:2; color:var(--cream); text-align:center; opacity:.92;
+  }
+  .cf.back .flip-tag{
+    position:absolute; top:14px; left:16px;
+    font-size:10.5px; letter-spacing:2px; color:var(--gold); opacity:.7;
+  }
+  .portrait-wrap{
+    position:relative;
+    flex:1;
+    min-height:0;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .frame-corner{
+    position:absolute; width:26px; height:26px; opacity:.85; z-index:3;
+    transition: transform 0.3s;
+  }
+  .card3d:hover .frame-corner{ transform: scale(1.1); }
+  .frame-corner svg{ width:100%; height:100%; }
+  .fc-tl{ top:10px; left:10px; }
+  .fc-tr{ top:10px; right:10px; transform:scaleX(-1); }
+  .fc-bl{ bottom:10px; left:10px; transform:scaleY(-1); }
+  .fc-br{ bottom:10px; right:10px; transform:scale(-1); }
+  .portrait-name{
+    flex:0 0 auto;
+    text-align:center;
+    padding:16px 10px 6px;
+    position:relative; z-index:3;
+  }
+  .portrait-name .t1{
+    font-family:'Aref Ruqaa', serif; font-size:17px; color:var(--gold-bright); letter-spacing:1px;
+  }
+  .portrait-name .t2{
+    font-size:9px; letter-spacing:3px; color:var(--cream); opacity:.55; margin-top:3px;
+  }
+  .tap-hint{
+    flex:0 0 auto;
+    text-align:center; padding:8px 10px 14px;
+    position:relative; z-index:3;
+    font-size:10px; letter-spacing:2px; color:var(--gold); opacity:.75;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%, 100%{ opacity:0.75; }
+    50%{ opacity:0.4; }
+  }
+  .hint{
+    text-align:center; font-size:12px; color:var(--cream); opacity:.5;
+    margin-top:16px; letter-spacing:1px;
+    position:relative; z-index:3;
+  }
+
+  /* --- Content sections with scroll reveal --- */
+  section{
+    position:relative; z-index:3;
+    max-width:640px;
+    margin:0 auto;
+    padding:26px 22px;
+  }
+  .lede{
+    font-size:16.5px; line-height:2; text-align:center; color:var(--cream); opacity:.92;
+    padding-bottom:6px;
+    transform: translateY(30px);
+    opacity:0;
+    transition: all 0.8s ease;
+  }
+  .lede.revealed{ transform: translateY(0); opacity:1; }
+  .lede b{ color:var(--gold-bright); font-weight:700; }
+
+  .divider{
+    display:flex; align-items:center; gap:12px;
+    max-width:640px; margin:8px auto 0; padding:0 22px;
+    color:var(--gold); opacity:.6;
+    transform: scaleX(0);
+    transition: transform 1s ease 0.3s;
+  }
+  .divider.revealed{ transform: scaleX(1); }
+  .divider::before, .divider::after{
+    content:""; flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .divider span{ font-size:12px; letter-spacing:3px; white-space:nowrap; }
+
+  /* --- Animated Timeline --- */
+  .timeline{
+    max-width:640px; margin:0 auto; padding:18px 22px 10px;
+    display:flex; flex-direction:column; gap:0;
+    border-right:2px solid rgba(201,162,74,.2);
+    margin-right:32px;
+    position:relative;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute; right:-2px; top:0;
+    width:2px; height:0;
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    transition: height 2s ease;
+  }
+  .timeline.revealed::before{ height:100%; }
+  
+  .beat{
+    position:relative;
+    padding:0 26px 34px 0;
+    transform: translateX(20px);
+    opacity:0;
+    transition: all 0.6s ease;
+  }
+  .beat.revealed{ transform: translateX(0); opacity:1; }
+  .beat:last-child{ padding-bottom:6px; }
+  .beat::before{
+    content:"";
+    position:absolute; right:-39px; top:2px;
+    width:14px; height:14px; border-radius:50%;
+    background:var(--espresso);
+    border:2px solid var(--gold-bright);
+    box-shadow:0 0 0 4px var(--espresso), 0 0 14px rgba(233,200,119,.3);
+    transition: all 0.4s ease;
+  }
+  .beat.revealed::before{
+    background:var(--gold-bright);
+    box-shadow:0 0 0 4px var(--espresso), 0 0 20px rgba(233,200,119,.8);
+  }
+  .beat .yr{
+    font-family:'Aref Ruqaa', serif;
+    color:var(--gold-bright); font-size:20px; font-weight:700;
+    display:block; margin-bottom:4px;
+    text-shadow: 0 0 10px rgba(233,200,119,0.3);
+  }
+  .beat p{
+    font-size:14.5px; line-height:1.9; color:var(--cream); opacity:.88;
+  }
+
+  .plate{
+    max-width:640px; margin:20px auto 0; padding:0 22px;
+    transform: translateY(30px);
+    opacity:0;
+    transition: all 0.8s ease;
+  }
+  .plate.revealed{ transform: translateY(0); opacity:1; }
+  .plate .card{
+    background:linear-gradient(160deg, rgba(201,162,74,.14), rgba(201,162,74,.04));
+    border:1px solid rgba(201,162,74,.35);
+    border-radius:14px;
+    padding:22px 20px;
+    text-align:center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .plate .card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 20px rgba(201,162,74,0.1);
+  }
+  .plate .card .tag{
+    font-size:11.5px; letter-spacing:3px; color:var(--gold); opacity:.8; margin-bottom:8px;
+  }
+  .plate .card p{
+    font-size:15px; line-height:1.95; color:var(--cream);
+  }
+  .plate .card b{ color:var(--gold-bright); }
+
+  footer{
+    position:relative; z-index:3;
+    text-align:center;
+    padding:34px 22px 42px;
+    font-size:12px; color:var(--cream); opacity:.5; letter-spacing:1px;
+  }
+  footer .canal-mark{ color:var(--canal); filter:brightness(1.8); opacity:.9; }
+</style>
+</head>
+<body>
+
+  <div id="spotlight"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="curtain" id="curtain">
+    <div class="panel"></div>
+    <div class="panel"></div>
+  </div>
+
+  <header>
+    <div class="eyebrow">ميدان <span>· محافظة السويس ·</span></div>
+    <h1 class="name">إسماعيل ياسين</h1>
+    <div class="years">١٩١٢ — ١٩٧٢ · ابن السويس، وأحد نجوم الكوميديا في السينما المصرية</div>
+  </header>
+
+  <div class="stage">
+    <div class="card3d-wrap">
+      <div class="card3d" id="card3d">
+        <div class="cf front">
+          <div class="frame-corner fc-tl"><svg viewBox="0 0 26 26"><path d="M2 24 V6 Q2 2 6 2 H24" stroke="#e9c877" stroke-width="2" fill="none"/></svg></div>
+          <div class="frame-corner fc-tr"><svg viewBox="0 0 26 26"><path d="M2 24 V6 Q2 2 6 2 H24" stroke="#e9c877" stroke-width="2" fill="none"/></svg></div>
+          <div class="frame-corner fc-bl"><svg viewBox="0 0 26 26"><path d="M2 24 V6 Q2 2 6 2 H24" stroke="#e9c877" stroke-width="2" fill="none"/></svg></div>
+          <div class="frame-corner fc-br"><svg viewBox="0 0 26 26"><path d="M2 24 V6 Q2 2 6 2 H24" stroke="#e9c877" stroke-width="2" fill="none"/></svg></div>
+          <div class="portrait-name">
+            <div class="t1">إسماعيل ياسين</div>
+            <div class="t2">نجم الكوميديا المصرية</div>
+          </div>
+          <div class="portrait-wrap">
+            <svg viewBox="0 0 300 340" width="88%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <radialGradient id="bg" cx="50%" cy="35%" r="75%">
+                  <stop offset="0%" stop-color="#4a3420"/>
+                  <stop offset="100%" stop-color="#1c1108"/>
+                </radialGradient>
+                <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#e8b98a"/>
+                  <stop offset="100%" stop-color="#c99566"/>
+                </linearGradient>
+                <linearGradient id="fez" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#c23b2a"/>
+                  <stop offset="100%" stop-color="#7a2018"/>
+                </linearGradient>
+                <linearGradient id="suit" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2b2018"/>
+                  <stop offset="100%" stop-color="#120c07"/>
+                </linearGradient>
+              </defs>
+              <rect width="300" height="340" fill="url(#bg)"/>
+              <g transform="scale(1,0.85)">
+                <ellipse cx="150" cy="150" rx="150" ry="180" fill="#e9c877" opacity="0.08"/>
+                <path d="M40 400 Q60 300 150 292 Q240 300 260 400 Z" fill="url(#suit)"/>
+                <path d="M120 300 L150 330 L180 300 L172 292 L150 308 L128 292 Z" fill="#f2e6c9" opacity="0.9"/>
+                <path d="M150 308 L142 330 L150 322 L158 330 Z" fill="#7a2018"/>
+                <rect x="130" y="255" width="40" height="45" fill="url(#skin)"/>
+                <ellipse cx="150" cy="205" rx="72" ry="82" fill="url(#skin)"/>
+                <ellipse cx="80" cy="210" rx="10" ry="16" fill="#c99566"/>
+                <ellipse cx="220" cy="210" rx="10" ry="16" fill="#c99566"/>
+                <path d="M104 178 Q120 168 138 176" stroke="#2b1c10" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M162 176 Q180 168 196 178" stroke="#2b1c10" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M108 196 Q120 188 133 196" stroke="#1c1108" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                <path d="M167 196 Q180 188 192 196" stroke="#1c1108" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                <circle cx="120" cy="198" r="2.4" fill="#1c1108"/>
+                <circle cx="180" cy="198" r="2.4" fill="#1c1108"/>
+                <path d="M148 195 Q142 220 138 228 Q148 234 158 228" stroke="#8a5a34" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M104 240 Q125 226 150 236 Q175 226 196 240 Q178 252 150 246 Q122 252 104 240 Z" fill="#241407"/>
+                <path d="M118 252 Q150 278 182 252 Q150 268 118 252 Z" fill="#7a2e22"/>
+                <path d="M128 254 Q150 264 172 254" stroke="#f2e6c9" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M100 220 Q92 234 98 248" stroke="#a8744a" stroke-width="2.5" fill="none" opacity="0.6" stroke-linecap="round"/>
+                <path d="M200 220 Q208 234 202 248" stroke="#a8744a" stroke-width="2.5" fill="none" opacity="0.6" stroke-linecap="round"/>
+                <path d="M92 168 Q95 108 150 100 Q205 108 208 168 Q150 152 92 168 Z" fill="url(#fez)"/>
+                <ellipse cx="150" cy="168" rx="58" ry="10" fill="#5c150f"/>
+                <line x1="150" y1="100" x2="150" y2="82" stroke="#241407" stroke-width="2.5"/>
+                <circle cx="150" cy="80" r="5" fill="#241407"/>
+                <path d="M148 82 Q158 92 150 100" stroke="#241407" stroke-width="2" fill="none"/>
+                <path d="M250 90 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 Z" fill="#e9c877" opacity="0.85"/>
+                <path d="M42 130 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#e9c877" opacity="0.6"/>
+              </g>
+            </svg>
+          </div>
+          <div class="tap-hint">اضغط لقراءة القصة ⟳</div>
+        </div>
+        <div class="cf back">
+          <span class="flip-tag">القصة</span>
+          <p>ابن مدينة السويس الذي حوّل ضحكته إلى إرث سينمائي خالد، ومن هنا سُمّي هذا الميدان تكريمًا له. اضغط تاني للرجوع.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="hint">حرّك إصبعك على البطاقة، واضغط عليها لقلبها</p>
+
+  <section>
+    <p class="lede scroll-reveal">
+      وُلِد إسماعيل ياسين في مدينة <b>السويس</b> عام ١٩١٢، ومن هذا الميدان يحمل اسمه اليوم تحية لابن المدينة الذي صعد من طفولة صعبة ليصبح واحدًا من أعمدة الكوميديا في تاريخ السينما العربية.
+    </p>
+  </section>
+
+  <div class="divider scroll-reveal"><span>محطات من حياته</span></div>
+
+  <div class="timeline scroll-reveal">
+    <div class="beat" data-delay="0">
+      <span class="yr">البداية</span>
+      <p>نشأ في ظروف قاسية، فترك تعليمه بعد وفاة والدته ودخول والده السجن، وعمل مناديًا أمام أحد محال الأقمشة قبل أن تتفتح موهبته في الغناء والتمثيل.</p>
+    </div>
+    <div class="beat" data-delay="1">
+      <span class="yr">١٩٣٩</span>
+      <p>خطواته الأولى في السينما، بعد أن غنّى في الأفراح والمقاهي وانضم إلى فرقة بديعة مصابني في القاهرة.</p>
+    </div>
+    <div class="beat" data-delay="2">
+      <span class="yr">١٩٣٥–١٩٩٥</span>
+      <p>عمل مطربًا ومونولوجستًا وممثلًا ضمن فرقة علي الكسار المسرحية، وترسّخت خبرته على خشبة المسرح.</p>
+    </div>
+    <div class="beat" data-delay="3">
+      <span class="yr">النجومية</span>
+      <p>أصبح ثاني فنان في تاريخ السينما المصرية بعد ليلى مراد تُنتَج له أفلام تحمل اسمه، من أبرزها "إسماعيل يس في الجيش" و"إسماعيل يس في البوليس".</p>
+    </div>
+    <div class="beat" data-delay="4">
+      <span class="yr">١٩٥٤–١٩٦٦</span>
+      <p>أسّس فرقته المسرحية الخاصة، وقدّم خلال اثني عشر عامًا أكثر من خمسين مسرحية.</p>
+    </div>
+    <div class="beat" data-delay="5">
+      <span class="yr">١٩٧٢</span>
+      <p>رحل عن عالمنا في القاهرة، تاركًا إرثًا كوميديًا لا يزال حاضرًا في الذاكرة الشعبية المصرية حتى اليوم.</p>
+    </div>
+  </div>
+
+  <div class="plate scroll-reveal">
+    <div class="card">
+      <div class="tag">لماذا هذا الميدان</div>
+      <p>سُمّي هذا الميدان تكريمًا لـ<b>ابن السويس</b> الذي حمل اسم مدينته معه إلى شاشات السينما، وصار ضحكه جزءًا من ذاكرة المصريين جميعًا.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="canal-mark">⟡</span> السويس — مدينة على القناة، ومدينة الأبطال
+  </footer>
+
+<script>
+  // --- Curtain Animation ---
+  window.addEventListener('load', () => {
+    const curtain = document.getElementById('curtain');
+    setTimeout(() => curtain.classList.add('open'), 350);
+    setTimeout(() => curtain.classList.add('done'), 350 + 2000);
+  });
+
+  // --- 3D Card with Enhanced Tilt ---
+  const card = document.getElementById('card3d');
+  let isFlipped = false;
+  let dragging = false;
+  let startX = 0;
+
+  function applyTilt(px, py, rect){
+    const x = (px - rect.left) / rect.width - 0.5;
+    const y = (py - rect.top) / rect.height - 0.5;
+    const ry = x * 35 + (isFlipped ? 180 : 0);
+    const rx = -y * 25;
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+  }
+
+  function resetTilt(){
+    card.style.transform = `rotateX(0deg) rotateY(${isFlipped ? 180 : 0}deg)`;
+  }
+
+  card.addEventListener('pointermove', (e) => {
+    if (!dragging) applyTilt(e.clientX, e.clientY, card.getBoundingClientRect());
+  });
+  card.addEventListener('pointerleave', resetTilt);
+
+  card.addEventListener('pointerdown', (e) => { startX = e.clientX; dragging = false; });
+  card.addEventListener('pointerup', (e) => {
+    const moved = Math.abs(e.clientX - startX) > 6;
+    if (!moved){
+      isFlipped = !isFlipped;
+      resetTilt();
+    }
+  });
+
+  card.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    applyTilt(t.clientX, t.clientY, card.getBoundingClientRect());
+  }, {passive:true});
+  card.addEventListener('touchend', resetTilt);
+
+  // Gyroscope for mobile
+  window.addEventListener('deviceorientation', (e) => {
+    if (e.beta === null || dragging) return;
+    const x = Math.max(-20, Math.min(20, (e.gamma||0)));
+    const y = Math.max(-16, Math.min(16, (e.beta||0) - 45));
+    const ry = x * 0.9 + (isFlipped ? 180 : 0);
+    card.style.transform = `rotateX(${-y*0.7}deg) rotateY(${ry}deg)`;
+  });
+
+  // --- Mouse Spotlight ---
+  const spotlight = document.getElementById('spotlight');
+  document.addEventListener('mousemove', (e) => {
+    spotlight.style.left = e.clientX + 'px';
+    spotlight.style.top = e.clientY + 'px';
+  });
+
+  // --- Gold Particles System ---
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Particle {
+    constructor(){
+      this.reset();
+    }
+    reset(){
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.life = Math.random() * 100 + 100;
+    }
+    update(){
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life--;
+      if(this.life <= 0 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height){
+        this.reset();
+      }
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(233, 200, 119, ${this.opacity})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'rgba(233, 200, 119, 0.5)';
+      ctx.fill();
+    }
+  }
+
+  for(let i=0; i<60; i++) particles.push(new Particle());
+
+  function animateParticles(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // --- Scroll Reveal Animation ---
+  const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('revealed');
+        
+        // Stagger children for timeline
+        if(entry.target.classList.contains('timeline')){
+          const beats = entry.target.querySelectorAll('.beat');
+          beats.forEach((beat, index) => {
+            setTimeout(() => {
+              beat.classList.add('revealed');
+            }, index * 200);
+          });
+        }
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
