@@ -29,7 +29,6 @@
     min-height:100vh;
   }
   
-  /* --- Film grain & vignette --- */
   body::before{
     content:"";
     position:fixed; inset:0;
@@ -47,7 +46,6 @@
     z-index:2;
   }
 
-  /* --- Mouse spotlight --- */
   #spotlight{
     position:fixed;
     width:600px; height:600px;
@@ -58,7 +56,6 @@
     transition: opacity 0.3s;
   }
 
-  /* --- Gold Particles --- */
   #particles-canvas{
     position:fixed; inset:0;
     pointer-events:none;
@@ -66,13 +63,12 @@
     opacity:0.6;
   }
 
-  /* --- 3D Curtain with fold effect --- */
+  /* --- Curtain opens from center to sides --- */
   .curtain{
     position:fixed; inset:0; z-index:50;
     display:flex;
     pointer-events:none;
     visibility:visible;
-    perspective:1200px;
   }
   .curtain .panel{
     flex:1; 
@@ -83,33 +79,31 @@
     box-shadow: inset -10px 0 25px rgba(0,0,0,.5);
     transition: transform 1.8s cubic-bezier(.76,0,.24,1);
     will-change: transform;
-    transform-style: preserve-3d;
   }
   .curtain .panel:first-child{
     transform-origin:left center;
-    transform: rotateY(0deg);
+    transform: translateX(0);
   }
   .curtain .panel:last-child{
     transform-origin:right center;
-    transform: rotateY(0deg);
+    transform: translateX(0);
   }
   .curtain.open .panel:first-child{
-    transform: translateX(-102%) rotateY(35deg);
+    transform: translateX(-100%);
   }
   .curtain.open .panel:last-child{
-    transform: translateX(102%) rotateY(-35deg);
+    transform: translateX(100%);
   }
   .curtain.done{ visibility:hidden; }
 
-  /* --- Header with staggered animation --- */
   header{
     position:relative; z-index:3;
     text-align:center;
-    padding:38px 20px 10px;
+    padding:28px 20px 6px;
   }
   .eyebrow{
-    font-size:12.5px;
-    letter-spacing:4px;
+    font-size:14px;
+    letter-spacing:3px;
     color:var(--gold);
     text-transform:uppercase;
     opacity:0;
@@ -121,17 +115,17 @@
   h1.name{
     font-family:'Aref Ruqaa', serif;
     font-weight:700;
-    font-size:clamp(40px, 12vw, 64px);
+    font-size:clamp(44px, 13vw, 72px);
     color:var(--gold-bright);
     text-shadow: 0 2px 0 #5c3b12, 0 6px 18px rgba(0,0,0,.5);
-    margin:8px 0 2px;
+    margin:6px 0 2px;
     line-height:1.15;
     opacity:0;
     transform: translateY(30px);
     animation: fadeUp 1s ease forwards 2.0s;
   }
   .years{
-    font-size:15px; letter-spacing:2px; color:var(--cream); opacity:0;
+    font-size:16px; letter-spacing:2px; color:var(--cream); opacity:0;
     transform: translateY(20px);
     animation: fadeUp 0.8s ease forwards 2.2s;
   }
@@ -140,11 +134,10 @@
     to{ opacity:1; transform: translateY(0); }
   }
 
-  /* --- 3D Stage with floating --- */
   .stage{
     position:relative; z-index:3;
     display:flex; justify-content:center;
-    padding:26px 20px 8px;
+    padding:18px 20px 4px;
     perspective:1400px;
   }
   .card3d-wrap{
@@ -167,7 +160,6 @@
   }
   .card3d.flipped{ transform:rotateY(180deg) !important; }
   
-  /* Dynamic lighting overlay */
   .card3d::before{
     content:"";
     position:absolute; inset:0; border-radius:22px;
@@ -207,11 +199,11 @@
     padding:26px;
   }
   .cf.back p{
-    font-size:14px; line-height:2; color:var(--cream); text-align:center; opacity:.92;
+    font-size:15px; line-height:2; color:var(--cream); text-align:center; opacity:.92;
   }
   .cf.back .flip-tag{
     position:absolute; top:14px; left:16px;
-    font-size:10.5px; letter-spacing:2px; color:var(--gold); opacity:.7;
+    font-size:11px; letter-spacing:2px; color:var(--gold); opacity:.7;
   }
   .portrait-wrap{
     position:relative;
@@ -237,16 +229,16 @@
     position:relative; z-index:3;
   }
   .portrait-name .t1{
-    font-family:'Aref Ruqaa', serif; font-size:17px; color:var(--gold-bright); letter-spacing:1px;
+    font-family:'Aref Ruqaa', serif; font-size:19px; color:var(--gold-bright); letter-spacing:1px;
   }
   .portrait-name .t2{
-    font-size:9px; letter-spacing:3px; color:var(--cream); opacity:.55; margin-top:3px;
+    font-size:10px; letter-spacing:3px; color:var(--cream); opacity:.55; margin-top:3px;
   }
   .tap-hint{
     flex:0 0 auto;
     text-align:center; padding:8px 10px 14px;
     position:relative; z-index:3;
-    font-size:10px; letter-spacing:2px; color:var(--gold); opacity:.75;
+    font-size:11px; letter-spacing:2px; color:var(--gold); opacity:.75;
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse{
@@ -254,21 +246,20 @@
     50%{ opacity:0.4; }
   }
   .hint{
-    text-align:center; font-size:12px; color:var(--cream); opacity:.5;
-    margin-top:16px; letter-spacing:1px;
+    text-align:center; font-size:13px; color:var(--cream); opacity:.5;
+    margin-top:10px; letter-spacing:1px;
     position:relative; z-index:3;
   }
 
-  /* --- Content sections with scroll reveal --- */
   section{
     position:relative; z-index:3;
     max-width:640px;
     margin:0 auto;
-    padding:26px 22px;
+    padding:16px 22px;
   }
   .lede{
-    font-size:16.5px; line-height:2; text-align:center; color:var(--cream); opacity:.92;
-    padding-bottom:6px;
+    font-size:18px; line-height:2; text-align:center; color:var(--cream); opacity:.92;
+    padding-bottom:4px;
     transform: translateY(30px);
     opacity:0;
     transition: all 0.8s ease;
@@ -276,22 +267,8 @@
   .lede.revealed{ transform: translateY(0); opacity:1; }
   .lede b{ color:var(--gold-bright); font-weight:700; }
 
-  .divider{
-    display:flex; align-items:center; gap:12px;
-    max-width:640px; margin:8px auto 0; padding:0 22px;
-    color:var(--gold); opacity:.6;
-    transform: scaleX(0);
-    transition: transform 1s ease 0.3s;
-  }
-  .divider.revealed{ transform: scaleX(1); }
-  .divider::before, .divider::after{
-    content:""; flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-  .divider span{ font-size:12px; letter-spacing:3px; white-space:nowrap; }
-
-  /* --- Animated Timeline --- */
   .timeline{
-    max-width:640px; margin:0 auto; padding:18px 22px 10px;
+    max-width:640px; margin:0 auto; padding:14px 22px 6px;
     display:flex; flex-direction:column; gap:0;
     border-right:2px solid rgba(201,162,74,.2);
     margin-right:32px;
@@ -308,7 +285,7 @@
   
   .beat{
     position:relative;
-    padding:0 26px 34px 0;
+    padding:0 26px 28px 0;
     transform: translateX(20px);
     opacity:0;
     transition: all 0.6s ease;
@@ -330,16 +307,16 @@
   }
   .beat .yr{
     font-family:'Aref Ruqaa', serif;
-    color:var(--gold-bright); font-size:20px; font-weight:700;
+    color:var(--gold-bright); font-size:22px; font-weight:700;
     display:block; margin-bottom:4px;
     text-shadow: 0 0 10px rgba(233,200,119,0.3);
   }
   .beat p{
-    font-size:14.5px; line-height:1.9; color:var(--cream); opacity:.88;
+    font-size:15.5px; line-height:1.9; color:var(--cream); opacity:.88;
   }
 
   .plate{
-    max-width:640px; margin:20px auto 0; padding:0 22px;
+    max-width:640px; margin:14px auto 0; padding:0 22px;
     transform: translateY(30px);
     opacity:0;
     transition: all 0.8s ease;
@@ -358,18 +335,18 @@
     box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 20px rgba(201,162,74,0.1);
   }
   .plate .card .tag{
-    font-size:11.5px; letter-spacing:3px; color:var(--gold); opacity:.8; margin-bottom:8px;
+    font-size:12.5px; letter-spacing:3px; color:var(--gold); opacity:.8; margin-bottom:8px;
   }
   .plate .card p{
-    font-size:15px; line-height:1.95; color:var(--cream);
+    font-size:16px; line-height:1.95; color:var(--cream);
   }
   .plate .card b{ color:var(--gold-bright); }
 
   footer{
     position:relative; z-index:3;
     text-align:center;
-    padding:34px 22px 42px;
-    font-size:12px; color:var(--cream); opacity:.5; letter-spacing:1px;
+    padding:24px 22px 32px;
+    font-size:13px; color:var(--cream); opacity:.5; letter-spacing:1px;
   }
   footer .canal-mark{ color:var(--canal); filter:brightness(1.8); opacity:.9; }
 
@@ -401,7 +378,7 @@
   </div>
 
   <header>
-    <div class="eyebrow">ميدان <span>· محافظة السويس ·</span></div>
+    <div class="eyebrow">ميدان إسماعيل ياسين <span>· محافظة السويس ·</span></div>
     <h1 class="name">إسماعيل ياسين</h1>
     <div class="years">١٩١٢ — ١٩٧٢ · ابن السويس، وأحد نجوم الكوميديا في السينما المصرية</div>
   </header>
@@ -437,8 +414,6 @@
       وُلِد إسماعيل ياسين في مدينة <b>السويس</b> عام ١٩١٢، ومن هذا الميدان يحمل اسمه اليوم تحية لابن المدينة الذي صعد من طفولة صعبة ليصبح واحدًا من أعمدة الكوميديا في تاريخ السينما العربية.
     </p>
   </section>
-
-  <div class="divider scroll-reveal"><span>محطات من حياته</span></div>
 
   <div class="timeline scroll-reveal">
     <div class="beat" data-delay="0">
@@ -479,14 +454,12 @@
   </footer>
 
 <script>
-  // --- Curtain Animation ---
   window.addEventListener('load', () => {
     const curtain = document.getElementById('curtain');
     setTimeout(() => curtain.classList.add('open'), 350);
     setTimeout(() => curtain.classList.add('done'), 350 + 2000);
   });
 
-  // --- 3D Card with Enhanced Tilt ---
   const card = document.getElementById('card3d');
   let isFlipped = false;
   let dragging = false;
@@ -524,7 +497,6 @@
   }, {passive:true});
   card.addEventListener('touchend', resetTilt);
 
-  // Gyroscope for mobile
   window.addEventListener('deviceorientation', (e) => {
     if (e.beta === null || dragging) return;
     const x = Math.max(-20, Math.min(20, (e.gamma||0)));
@@ -533,14 +505,12 @@
     card.style.transform = `rotateX(${-y*0.7}deg) rotateY(${ry}deg)`;
   });
 
-  // --- Mouse Spotlight ---
   const spotlight = document.getElementById('spotlight');
   document.addEventListener('mousemove', (e) => {
     spotlight.style.left = e.clientX + 'px';
     spotlight.style.top = e.clientY + 'px';
   });
 
-  // --- Gold Particles System ---
   const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
   let particles = [];
@@ -592,14 +562,12 @@
   }
   animateParticles();
 
-  // --- Scroll Reveal Animation ---
   const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
         entry.target.classList.add('revealed');
         
-        // Stagger children for timeline
         if(entry.target.classList.contains('timeline')){
           const beats = entry.target.querySelectorAll('.beat');
           beats.forEach((beat, index) => {
