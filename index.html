@@ -28,7 +28,7 @@
     width:100%;
     min-height:100vh;
   }
-  
+
   body::before{
     content:"";
     position:fixed; inset:0;
@@ -60,7 +60,7 @@
     position:fixed; inset:0;
     pointer-events:none;
     z-index:1;
-    opacity:0.6;
+    opacity:0.7;
   }
 
   .curtain{
@@ -110,7 +110,7 @@
     animation: fadeUp 0.8s ease forwards 1.8s;
   }
   .eyebrow span{ opacity:.6; letter-spacing:2px; }
-  
+
   h1.name{
     font-family:'Aref Ruqaa', serif;
     font-weight:700;
@@ -147,7 +147,7 @@
     0%, 100%{ transform: translateY(0px); }
     50%{ transform: translateY(-12px); }
   }
-  
+
   .card3d{
     width:min(82vw, 320px);
     aspect-ratio:3/4;
@@ -158,7 +158,7 @@
     touch-action:none;
   }
   .card3d.flipped{ transform:rotateY(180deg) !important; }
-  
+
   .card3d::before{
     content:"";
     position:absolute; inset:0; border-radius:22px;
@@ -281,7 +281,7 @@
     transition: height 2s ease;
   }
   .timeline.revealed::before{ height:100%; }
-  
+
   .beat{
     position:relative;
     padding:0 26px 28px 0;
@@ -449,6 +449,7 @@
   }
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -485,12 +486,12 @@
         </div>
         <div class="cf back">
           <span class="flip-tag">القصة</span>
-          <p>ابن مدينة السويس الذي حوّل ضحكته إلى إرث سينمائي خالد، ومن هنا سُمّي هذا الميدان تكريمًا له. اضغط تاني للرجوع.</p>
+          <p>ابن مدينة السويس الذي حوّل ضحكته إلى إرث سينمائي خالد ومن هنا سُمّي هذا الميدان تكريمًا له. اضغط تاني للرجوع.</p>
         </div>
       </div>
     </div>
   </div>
-  <p class="hint">حرّك إصبعك على البطاقة، واضغط عليها لقلبها</p>
+  <p class="hint">حرّك إصبعك على البطاقة واضغط عليها لقلبها</p>
 
   <section>
     <p class="lede scroll-reveal">
@@ -619,7 +620,7 @@
   const canvas = document.getElementById('particles-canvas');
   const ctx = canvas.getContext('2d');
   let particles = [];
-  
+
   function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -677,7 +678,7 @@
       }
       ctx.lineTo(cx, cy - outerRadius);
       ctx.closePath();
-      
+
       let twinkleOpacity = this.opacity * (0.5 + 0.5 * Math.sin(this.twinklePhase));
       ctx.fillStyle = `rgba(233, 200, 119, ${twinkleOpacity})`;
       ctx.shadowBlur = 14;
@@ -703,7 +704,7 @@
     entries.forEach(entry => {
       if(entry.isIntersecting){
         entry.target.classList.add('revealed');
-        
+
         if(entry.target.classList.contains('timeline')){
           const beats = entry.target.querySelectorAll('.beat');
           beats.forEach((beat, index) => {
